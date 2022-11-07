@@ -1,10 +1,13 @@
 package com.betsson.foursquare.ui.venues
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,13 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.betsson.foursquare.model.VenueItem
+import com.betsson.foursquare.ui.custom.PriceRange
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VenuesRoute(
     modifier: Modifier = Modifier,
-    viewModel: VenuesViewModel = viewModel()
+    viewModel: VenuesViewModel = viewModel(),
+    onClick: (String) -> Unit,
 ) {
 
     Scaffold(
@@ -39,6 +44,7 @@ fun VenuesRoute(
         Venues(
             modifier = modifier.padding(it),
             items = items.plus(items),
+            onClick = onClick,
         )
     }
 }
@@ -47,15 +53,15 @@ fun VenuesRoute(
 private fun Venues(
     modifier: Modifier = Modifier,
     items: List<VenueItem>,
+    onClick: (String) -> Unit,
 ) {
     LazyColumn(
-        modifier = modifier.padding(4.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(items) {
-            VenueItem(item = it)
+            VenueItem(item = it, onClick = onClick)
             Spacer(modifier = Modifier.size(4.dp))
-            Divider()
         }
     }
 
@@ -65,74 +71,64 @@ private fun Venues(
 private fun VenueItem(
     item: VenueItem,
     modifier: Modifier = Modifier,
+    onClick: (String) -> Unit,
 ) {
-    
-    Row(
+    ElevatedCard(
         modifier = modifier
             .fillMaxWidth()
-            .height(100.dp),
+            .height(100.dp)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = rememberRipple(bounded = true),
+                onClick = { onClick(item.fsq_id) }
+            ),
+        shape = RoundedCornerShape(4.dp),
     ) {
-        AsyncImage(
-            modifier = Modifier.size(100.dp),
-            model = item.photoUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-        )
+        Row {
+            AsyncImage(
+                modifier = Modifier.size(100.dp),
+                model = item.photoUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+            )
 
-        Spacer(modifier = Modifier.size(8.dp))
+            Spacer(modifier = Modifier.size(4.dp))
 
-        Column {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Column(
+                modifier = Modifier.padding(4.dp)
             ) {
-                Text(
-                    text = item.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = item.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .background(
+                                color = ratingColor(item.rating),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(8.dp),
+                        text = item.rating.toString(),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                PriceRange(price = item.price)
 
                 Text(
-                    modifier = Modifier
-                        .background(
-                            color = ratingColor(item.rating),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(8.dp),
-                    text = item.rating.toString(),
+                    text = "${item.distance/1000F}km",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-
-            PriceRange(price = item.price)
-
-            Text(
-                text = "${item.distance/1000F}km",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
-
-}
-
-@Composable
-private fun PriceRange(
-    price: Int,
-    currency: String = "€",
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier,
-    ) {
-        for (i in 1..4) {
-            Text(
-                text = currency,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = if(i<=price) 1f else 0.3f)
-            )
         }
     }
 }
@@ -148,13 +144,7 @@ private fun PreviewVenueItem() {
         price = 2,
         rating = 9,
     )
-    VenueItem(item = item)
-}
-
-@Preview
-@Composable
-private fun PreviewPriceRange() {
-    PriceRange(price = 3)
+    VenueItem(item = item) { }
 }
 
 private fun ratingColor(rating: Int): Color {

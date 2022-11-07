@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Foursquare</string>
+     <!-- Venue details -->
+    <string name="tab_highlights">Highlights</string>
+    <string name="tab_tips">Tips</string>
+    <string name="section_address">Address</string>
+    <string name="section_hours">Hours</string>
+    <string name="section_open">Open now</string>
+    <string name="section_closed">Closed now</string>
+    <string name="section_category">Category</string>
+
+    <!-- Week days -->
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 </resources>
