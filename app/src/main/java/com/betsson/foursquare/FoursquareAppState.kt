@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 
 sealed class Screen(val route: String) {
     object Venues: Screen("venues")
-    object Details: Screen("detail")
+    object Details: Screen("venue/{id}")
 }
 
 @Composable
