@@ -15,14 +15,14 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Rating(
     modifier: Modifier = Modifier,
-    rating: Int,
+    rating: Float,
 ) {
     Box(
         contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(
             modifier = modifier.size(80.dp),
-            progress = rating.toFloat()/10,
+            progress = rating/10,
         )
 
         Text(
@@ -36,5 +36,5 @@ fun Rating(
 @Preview
 @Composable
 private fun PreviewRating() {
-    Rating(rating = 8)
+    Rating(rating = 8f)
 }

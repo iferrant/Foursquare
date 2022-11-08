@@ -8,6 +8,7 @@
     <string name="section_open">Open now</string>
     <string name="section_closed">Closed now</string>
     <string name="section_category">Category</string>
+    <string name="empty_section_photos">No photos yet</string>
 
     <!-- Week days -->
     <string name="monday">Monday</string>

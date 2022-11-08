@@ -24,7 +24,11 @@ fun Contact(
         modifier = modifier,
     ) {
         TitledContact(title = stringResource(id = R.string.section_address)) {
-            Address(address = venue.address)
+            if (venue.address != null) {
+                Address(address = venue.address)
+            } else {
+                // TODO: Empty state
+            }
         }
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
@@ -38,7 +42,11 @@ fun Contact(
         Divider(modifier = Modifier.padding(vertical = 8.dp))
 
         TitledContact(title = stringResource(id = R.string.section_category)) {
-            Category(categories = venue.categories)
+            if (venue.categories != null) {
+                Category(categories = venue.categories)
+            } else {
+                // TODO: Empty state
+            }
         }
     }
 }

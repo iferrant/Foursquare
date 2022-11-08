@@ -7,8 +7,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.betsson.foursquare.R
 import com.betsson.foursquare.model.Venue
 import com.betsson.foursquare.ui.custom.Rating
 
@@ -39,7 +41,13 @@ fun VenueInfo(
             DetailsSection(
                 title = "Photos",
             ) {
-                PhotosCarousel(photos = venue.photos)
+                if (venue.photos != null && venue.photos.filterNotNull().isNotEmpty()) {
+                    PhotosCarousel(photos = venue.photos.filterNotNull())
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.empty_section_photos),
+                    )
+                }
             }
         }
 

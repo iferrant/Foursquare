@@ -7,12 +7,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.betsson.foursquare.ui.theme.FoursquareTheme
 import com.betsson.foursquare.ui.venuedetails.VenueDetailsClick
 import com.betsson.foursquare.ui.venuedetails.VenueDetailsRoute
@@ -37,19 +36,15 @@ fun FoursquareApp(
 
                 composable(route = Screen.Venues.route) {
                     VenuesRoute(
-                        viewModel = hiltViewModel(),
                         onClick = { id -> state.navController.navigate("venue/${id}") }
                     )
                 }
 
                 composable(
                     route = Screen.Details.route,
-                    arguments = listOf(navArgument("id") { type = NavType.StringType })
-                ) { backStackEntry ->
-                    VenueDetailsRoute(
-                        viewModel = hiltViewModel(),
-                        venueId = backStackEntry.arguments?.getString("id") ?: ""
-                    ) {
+                    arguments = listOf(navArgument(venueIdArg) { type = NavType.StringType })
+                ) {
+                    VenueDetailsRoute {
                         when (it) {
                             VenueDetailsClick.OnBack -> state.navController.popBackStack()
                             else -> { }
@@ -59,4 +54,11 @@ fun FoursquareApp(
             }
         }
     }
+}
+
+internal const val venueIdArg = "venueId"
+
+internal class VenueArgs(val venueId: String) {
+    constructor(savedStateHandle: SavedStateHandle) :
+            this(checkNotNull(savedStateHandle.get<String>(venueIdArg)))
 }

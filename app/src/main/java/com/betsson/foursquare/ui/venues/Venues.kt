@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,19 +18,27 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.betsson.foursquare.model.VenueItem
 import com.betsson.foursquare.ui.custom.PriceRange
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalLifecycleComposeApi::class,
+)
 @Composable
 fun VenuesRoute(
     modifier: Modifier = Modifier,
-    viewModel: VenuesViewModel = viewModel(),
+    viewModel: VenuesViewModel = hiltViewModel(),
     onClick: (String) -> Unit,
 ) {
+
+    val venuesListState by viewModel.venuesListUiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -43,7 +52,7 @@ fun VenuesRoute(
 
         Venues(
             modifier = modifier.padding(it),
-            items = items.plus(items),
+            items = venuesListState,
             onClick = onClick,
         )
     }
@@ -80,7 +89,7 @@ private fun VenueItem(
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = rememberRipple(bounded = true),
-                onClick = { onClick(item.fsq_id) }
+                onClick = { onClick(item.fsqId) }
             ),
         shape = RoundedCornerShape(4.dp),
     ) {
@@ -103,7 +112,7 @@ private fun VenueItem(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = item.name,
+                        text = item.name ?: "",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -138,17 +147,17 @@ private fun VenueItem(
 private fun PreviewVenueItem() {
     val item = VenueItem(
         distance = 1300,
-        fsq_id = "id",
+        fsqId = "id",
         name = "Bus Stop Lounge",
         photoUrl = "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
         price = 2,
-        rating = 9,
+        rating = 9f,
     )
     VenueItem(item = item) { }
 }
 
-private fun ratingColor(rating: Int): Color {
-    val colorHex = if (rating == 0) { "#C7CDCF" }
+private fun ratingColor(rating: Float): Color {
+    val colorHex = if (rating == 0f) { "#C7CDCF" }
     else if (rating > 0 && rating < 4) { "#E6092C" }
     else if (rating >= 4 && rating < 5) { "#FF6701" }
     else if (rating >= 5 && rating < 6) { "#FF9600" }
@@ -163,42 +172,42 @@ private fun ratingColor(rating: Int): Color {
 private var items = listOf(
     VenueItem(
         distance = 1300,
-        fsq_id = "id1",
+        fsqId = "id1",
         name = "Bus Stop Lounge",
         photoUrl = "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
         price = 1,
-        rating = 7,
+        rating = 7f,
     ),
     VenueItem(
         distance = 600,
-        fsq_id = "id2",
+        fsqId = "id2",
         name = "Emma's Kitchen",
         photoUrl = "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
         price = 3,
-        rating = 8,
+        rating = 8f,
     ),
     VenueItem(
         distance = 800,
-        fsq_id = "id3",
+        fsqId = "id3",
         name = "Dolce Sicilia",
         photoUrl = "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
         price = 7,
-        rating = 7,
+        rating = 7f,
     ),
     VenueItem(
         distance = 1700,
-        fsq_id = "id4",
+        fsqId = "id4",
         name = "Caffe Berry",
         photoUrl = "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
         price = 1,
-        rating = 9,
+        rating = 9f,
     ),
     VenueItem(
         distance = 1900,
-        fsq_id = "id5",
+        fsqId = "id5",
         name = "Coral Cafe",
         photoUrl = "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
         price = 2,
-        rating = 5,
+        rating = 5f,
     ),
 )

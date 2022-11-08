@@ -11,6 +11,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.betsson.foursquare.R
 import com.betsson.foursquare.model.Hours
@@ -25,16 +28,18 @@ sealed class VenueDetailsClick {
     class OnFav(val id: String): VenueDetailsClick()
 }
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun VenueDetailsRoute(
     modifier: Modifier = Modifier,
-    viewModel: VenueDetailsViewModel = viewModel(),
-    venueId: String,
+    viewModel: VenueDetailsViewModel = hiltViewModel(),
     onClick: (VenueDetailsClick) -> Unit,
 ) {
+    val state by viewModel.venueUiState.collectAsStateWithLifecycle()
+
     VenueDetails(
         modifier = modifier,
-        venue = venue,
+        venue = state,
         onClick = onClick,
     )
 }
@@ -85,7 +90,13 @@ fun VenueDetails(
 
             when (state) {
                 0 -> VenueInfo(venue = venue)
-                1 -> VenueTips(tips = venue.tips)
+                1 -> {
+                    if (venue.tips != null) {
+                        VenueTips(tips = venue.tips.filterNotNull())
+                    } else {
+                        //TODO: Empty state
+                    }
+                }
             }
         }
     }
@@ -102,16 +113,16 @@ fun DetailsTopBar(
         modifier = modifier,
         title = {
             Column {
-                Text(text = venue.name)
+                Text(text = venue.name ?: "")
                 Row {
-                    if (venue.categories.first().isNotEmpty()) {
+                    if (venue.categories != null && venue.categories.isNotEmpty()) {
                         Text(
                             text = venue.categories.first(),
                             style = MaterialTheme.typography.titleMedium,
                         )
-                    }
 
-                    Spacer(modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.size(16.dp))
+                    }
 
                     PriceRange(price = venue.price)
                 }
@@ -156,22 +167,10 @@ private val venue = Venue(
     ),
     address = "The Strand Gzira",
     name = "Bus Stop Lounge",
-    photos = listOf(
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-        "https://restaurantguidemalta.com/wp-content/uploads/2020/04/Bus-Stop-Lounge-The-Strand-Near-to-Manoel-Island-Gzira-Malta-5.jpg",
-    ),
-    popularity = 4,
+    photos = listOf(),
+    popularity = 4f,
     price = 3,
-    rating = 8,
+    rating = 8f,
     tel = "99786654",
     tips = listOf(
         Tip(

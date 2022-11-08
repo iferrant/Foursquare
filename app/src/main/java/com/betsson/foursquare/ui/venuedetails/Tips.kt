@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,17 +42,22 @@ fun Tip(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(
-            text = tip.createdAt,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-        )
-        Text(
-            text = tip.text,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(vertical = 16.dp)
-        )
+        if (tip.createdAt != null) {
+            Text(
+                text = tip.createdAt,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+            )
+        }
+        if (tip.text != null) {
+            Text(
+                text = tip.text,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+        }
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ) {
             Icon(
@@ -60,7 +66,7 @@ fun Tip(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             )
             Text(
-                text = tip.agreeCount.toString(),
+                text = if(tip.agreeCount != null) tip.agreeCount.toString() else "0",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             )
@@ -73,7 +79,7 @@ fun Tip(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             )
             Text(
-                text = tip.disagreeCount.toString(),
+                text = if (tip.disagreeCount != null) tip.disagreeCount.toString() else "0",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             )
@@ -83,7 +89,7 @@ fun Tip(
 
 @Preview
 @Composable
-fun VenueTips() {
+fun PreviewVenueTips() {
     VenueTips(
         tips = listOf(
             Tip(
