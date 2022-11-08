@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Foursquare</string>
-     <!-- Venue details -->
+    <!-- Venues list -->
+    <string name="coffee_title">Coffee &amp; tea</string>
+    <string name="filter_open_now">Open now</string>
+    <!-- Venue details -->
     <string name="tab_highlights">Highlights</string>
     <string name="tab_tips">Tips</string>
     <string name="section_address">Address</string>
