@@ -32,12 +32,6 @@ fun VenueInfo(
         }
 
         item(key = 2) {
-            DetailsSection {
-                Contact(venue = venue)
-            }
-        }
-
-        item(key = 3) {
             DetailsSection(
                 title = "Photos",
             ) {
@@ -48,6 +42,12 @@ fun VenueInfo(
                         text = stringResource(id = R.string.empty_section_photos),
                     )
                 }
+            }
+        }
+
+        item(key = 3) {
+            DetailsSection {
+                Contact(venue = venue)
             }
         }
 
