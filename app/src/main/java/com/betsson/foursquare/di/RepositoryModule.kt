@@ -1,7 +1,7 @@
 package com.betsson.foursquare.di
 
-import com.betsson.foursquare.data.repository.VenueRepository
-import com.betsson.foursquare.data.repository.VenueRepositoryImpl
+import com.betsson.foursquare.data.repository.PlaceRepository
+import com.betsson.foursquare.data.repository.PlaceRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,5 +12,5 @@ import dagger.hilt.components.SingletonComponent
 interface RepositoryModule {
 
     @Binds
-    fun provideVenueRepository(venueRepository: VenueRepositoryImpl): VenueRepository
+    fun providePlaceRepository(placeRepository: PlaceRepositoryImpl): PlaceRepository
 }

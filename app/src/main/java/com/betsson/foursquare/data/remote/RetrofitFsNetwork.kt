@@ -1,11 +1,15 @@
 package com.betsson.foursquare.data.remote
 
 import com.betsson.foursquare.BuildConfig
+import com.betsson.foursquare.data.remote.model.NetworkPhoto
+import com.betsson.foursquare.data.remote.model.NetworkResult
 import com.betsson.foursquare.data.remote.model.NetworkSearch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,14 +18,23 @@ private interface RetrofitFsNetworkApi {
     @GET(value = "places/search")
     suspend fun search(
         @Query("query") query: String,
+        @Query("fields") fields: String,
         @Query("categories") categories: String,
-    ) : NetworkResponse<NetworkSearch>
+        @Query("limit") limit: Int,
+    ) : NetworkSearch
+
+    @GET(value = "places/{id}")
+    suspend fun getPlace(
+        @Path("id") query: String,
+        @Query("fields") fields: String,
+    ) : NetworkResult
+
+    @GET(value = "places/{id}/photos")
+    suspend fun getPhotos(
+        @Path("id") query: String,
+    ) : List<NetworkPhoto>
 }
 
-
-private data class NetworkResponse<T> (
-    val data: T,
-)
 
 @Singleton
 class RetrofitFsNetwork @Inject constructor() : FsNetworkDataSource {
@@ -35,11 +48,32 @@ class RetrofitFsNetwork @Inject constructor() : FsNetworkDataSource {
                         setLevel(HttpLoggingInterceptor.Level.BODY)
                     }
                 )
+                .addInterceptor {
+                    val request = it
+                        .request()
+                        .newBuilder()
+                        .addHeader("accept", "application/json")
+                        .addHeader("Authorization", BuildConfig.AUTH_TOKEN)
+                        .build()
+                    it.proceed(request)
+                }
                 .build()
         )
+        .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(RetrofitFsNetworkApi::class.java)
 
-    override suspend fun search(query: String, categories: String): NetworkSearch =
-        networkApi.search(query, categories).data
+    override suspend fun search(
+        query: String,
+        fields: String,
+        categories: String,
+        limit: Int,
+    ): NetworkSearch =
+        networkApi.search(query, fields, categories, limit)
+
+    override suspend fun getPlace(id: String, fields: String): NetworkResult =
+        networkApi.getPlace(id, fields)
+
+    override suspend fun getPhotos(id: String): List<NetworkPhoto> =
+        networkApi.getPhotos(id)
 }

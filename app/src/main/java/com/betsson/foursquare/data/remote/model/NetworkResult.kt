@@ -1,42 +1,44 @@
 package com.betsson.foursquare.data.remote.model
 
 import com.betsson.foursquare.model.*
+import com.google.gson.annotations.SerializedName
 
 data class NetworkResult(
-    val categories: List<NetworkCategory>,
+    val categories: List<NetworkCategory>?,
     val distance: Int,
-    val fsq_id: String,
-    val networkHours: NetworkHours,
-    val networkLocation: NetworkLocation,
-    val name: String,
-    val networkPhotos: List<NetworkPhoto>,
-    val popularity: Int,
+    @SerializedName("fsq_id")
+    val fsqId: String,
+    val hours: NetworkHours?,
+    val location: NetworkLocation?,
+    val name: String?,
+    val photos: List<NetworkPhoto>?,
+    val popularity: Float,
     val price: Int,
-    val rating: Int,
-    val tel: String,
-    val networkTips: List<NetworkTip>,
+    val rating: Float,
+    val tel: String?,
+    val tips: List<NetworkTip?>?,
     val verified: Boolean,
-    val website: String
+    val website: String?
 )
 
 fun NetworkResult.asListModel() = VenueItem(
     distance = distance,
-    fsq_id = fsq_id,
+    fsqId = fsqId,
     name = name,
-    photoUrl = networkPhotos.first().tip.url,
+    photoUrl = if (photos != null && photos.isNotEmpty()) photos.first().asModel("200x200") else "",
     price = price,
     rating = rating,
 )
 
 fun NetworkResult.asModel() = Venue(
-    categories = categories.map { it.name },
+    categories = categories?.map { it.name },
     distance = distance,
-    fsq_id = fsq_id,
+    fsq_id = fsqId,
     hours = Hours(
-        display = networkHours.display,
-        isLocalHoliday = networkHours.is_local_holiday,
-        openNow = networkHours.open_now,
-        regular = networkHours.networkRegular.map {
+        display = hours?.display,
+        isLocalHoliday = hours?.isLocalHoliday,
+        openNow = hours?.openNow,
+        regular = hours?.regular?.map {
             Regular(
                 close = it.close,
                 day = it.day,
@@ -44,24 +46,26 @@ fun NetworkResult.asModel() = Venue(
             )
         }
     ),
-    location = Location(networkLocation.address),
+    address = location?.address,
     name = name,
-    photos = networkPhotos.map { Photo(url = it.tip.url) },
+    photos = photos?.map { it.tip?.url },
     popularity = popularity,
     price = price,
     rating = rating,
     tel = tel,
-    tips = networkTips.map {
-        Tip(
-            agreeCount = it.agree_count,
-            createdAt = it.created_at,
-            disagreeCount = it.disagree_count,
-            id = it.id,
-            lang = it.lang,
-            text = it.text,
-            url = it.url,
-        )
-    },
+    tips = tips?.let {
+            it.filterNotNull().map { tip ->
+                Tip(
+                    agreeCount = tip.agreeCount,
+                    createdAt = tip.created_at,
+                    disagreeCount = tip.disagreeCount,
+                    id = tip.id,
+                    lang = tip.lang,
+                    text = tip.text,
+                    url = tip.url,
+                )
+            }
+        },
     verified = verified,
     website = website,
 )
