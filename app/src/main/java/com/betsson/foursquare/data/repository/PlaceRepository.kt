@@ -10,10 +10,9 @@ interface PlaceRepository {
         fields: String = "categories,distance,fsq_id,hours,location,name,photos,popularity,price,rating,tel,tips,verified,website",
     ): Venue
 
-    suspend fun getCoffeeBarsStream(
+    suspend fun getPlaces(
         query: String = "",
         fields: String = "distance,fsq_id,location,name,photos,price,rating",
-        categories: String = "13032,13034,13034",
         minPrice: Int = 1,
         openNow: Boolean? = null,
         limit: Int = 50,

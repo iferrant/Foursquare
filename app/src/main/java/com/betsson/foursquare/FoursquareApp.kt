@@ -12,7 +12,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.betsson.foursquare.ui.theme.FoursquareTheme
 import com.betsson.foursquare.ui.venuedetails.view.VenueDetailsClick
 import com.betsson.foursquare.ui.venuedetails.view.VenueDetailsRoute
 import com.betsson.foursquare.ui.venues.view.VenuesRoute
@@ -22,33 +21,31 @@ import com.betsson.foursquare.ui.venues.view.VenuesRoute
 fun FoursquareApp(
     state: FoursquareAppState = rememberFoursquareAppState()
 ) {
-    FoursquareTheme {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.onBackground,
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+    ) {
+        NavHost(
+            navController = state.navController,
+            startDestination = Screen.Venues.route,
+            modifier = Modifier.padding(it)
         ) {
-            NavHost(
-                navController = state.navController,
-                startDestination = Screen.Venues.route,
-                modifier = Modifier.padding(it)
+
+            composable(route = Screen.Venues.route) {
+                VenuesRoute(
+                    onClick = { id -> state.navController.navigate("venue/${id}") }
+                )
+            }
+
+            composable(
+                route = Screen.Details.route,
+                arguments = listOf(navArgument(venueIdArg) { type = NavType.StringType })
             ) {
-
-                composable(route = Screen.Venues.route) {
-                    VenuesRoute(
-                        onClick = { id -> state.navController.navigate("venue/${id}") }
-                    )
-                }
-
-                composable(
-                    route = Screen.Details.route,
-                    arguments = listOf(navArgument(venueIdArg) { type = NavType.StringType })
-                ) {
-                    VenueDetailsRoute {
-                        when (it) {
-                            VenueDetailsClick.OnBack -> state.navController.popBackStack()
-                            else -> { }
-                        }
+                VenueDetailsRoute {
+                    when (it) {
+                        VenueDetailsClick.OnBack -> state.navController.popBackStack()
+                        else -> { }
                     }
                 }
             }

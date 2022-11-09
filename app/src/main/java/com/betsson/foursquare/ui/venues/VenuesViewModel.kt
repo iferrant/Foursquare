@@ -40,7 +40,7 @@ class VenuesViewModel @Inject constructor(
 
     private fun getVenuesList() {
         viewModelScope.launch {
-            val response = repository.getCoffeeBarsStream()
+            val response = repository.getPlaces()
             _venueUiStateFlow.update {
                 it.copy(
                     venuesList = response,
@@ -64,7 +64,7 @@ class VenuesViewModel @Inject constructor(
 
     private fun applyFilter(currentSearch: CurrentSearch) {
         viewModelScope.launch {
-            val response = repository.getCoffeeBarsStream(minPrice = currentSearch.price, openNow = currentSearch.open)
+            val response = repository.getPlaces(minPrice = currentSearch.price, openNow = currentSearch.open)
             _venueUiStateFlow.update {
                 it.copy(
                     venuesList = response,

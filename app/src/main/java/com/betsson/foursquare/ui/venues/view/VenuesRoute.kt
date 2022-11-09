@@ -42,7 +42,7 @@ fun VenuesRoute(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.coffee_title))
+                    Text(text = stringResource(id = R.string.venues_list_title))
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,

@@ -68,12 +68,11 @@ class RetrofitFsNetwork @Inject constructor() : FsNetworkDataSource {
     override suspend fun search(
         query: String,
         fields: String,
-        categories: String,
         minPrice: Int,
         openNow: Boolean?,
         limit: Int,
     ): NetworkSearch =
-        networkApi.search(query, fields, categories, minPrice, openNow, limit)
+        networkApi.search(query, fields, BuildConfig.CATEGORIES, minPrice, openNow, limit)
 
     override suspend fun getPlace(id: String, fields: String): NetworkResult =
         networkApi.getPlace(id, fields)

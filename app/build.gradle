@@ -26,7 +26,29 @@ android {
 
     }
 
+    flavorDimensions += "venues"
+
+    productFlavors {
+        create("coffee") {
+            dimension = "venues"
+            applicationIdSuffix = ".coffee"
+            versionNameSuffix = "-coffee"
+            buildConfigField("String", "CATEGORIES", "\"13032,13034,13034\"")
+        }
+        create("cocktail") {
+            dimension = "venues"
+            applicationIdSuffix = ".cocktail"
+            versionNameSuffix = "-cocktail"
+            buildConfigField("String", "CATEGORIES", "\"13009\"")
+        }
+    }
+
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

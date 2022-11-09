@@ -20,17 +20,16 @@ class PlaceRepositoryImpl @Inject constructor(
         network.getPlace(id, fields).asModel()
     }
 
-    override suspend fun getCoffeeBarsStream(
+    override suspend fun getPlaces(
         query: String,
         fields: String,
-        categories: String,
         minPrice: Int,
         openNow: Boolean?,
         limit: Int,
     ): List<VenueItem> =
         withContext(ioDispatcher) {
             network
-                .search(query, fields, categories, minPrice, openNow, limit)
+                .search(query, fields, minPrice, openNow, limit)
                 .results
                 .map(NetworkResult::asListModel)
         }
