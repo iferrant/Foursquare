@@ -13,9 +13,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.betsson.foursquare.ui.theme.FoursquareTheme
-import com.betsson.foursquare.ui.venuedetails.VenueDetailsClick
-import com.betsson.foursquare.ui.venuedetails.VenueDetailsRoute
-import com.betsson.foursquare.ui.venues.VenuesRoute
+import com.betsson.foursquare.ui.venuedetails.view.VenueDetailsClick
+import com.betsson.foursquare.ui.venuedetails.view.VenueDetailsRoute
+import com.betsson.foursquare.ui.venues.view.VenuesRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

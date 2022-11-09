@@ -1,4 +1,4 @@
-package com.betsson.foursquare.ui.venuedetails
+package com.betsson.foursquare.ui.venuedetails.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -14,13 +14,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.betsson.foursquare.R
 import com.betsson.foursquare.model.Hours
 import com.betsson.foursquare.model.Regular
 import com.betsson.foursquare.model.Tip
 import com.betsson.foursquare.model.Venue
 import com.betsson.foursquare.ui.custom.PriceRange
+import com.betsson.foursquare.ui.venuedetails.VenueDetailsViewModel
 import java.util.*
 
 sealed class VenueDetailsClick {

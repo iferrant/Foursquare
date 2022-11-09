@@ -20,6 +20,8 @@ private interface RetrofitFsNetworkApi {
         @Query("query") query: String,
         @Query("fields") fields: String,
         @Query("categories") categories: String,
+        @Query("min_price") minPrice: Int,
+        @Query("open_now") openNow: Boolean?,
         @Query("limit") limit: Int,
     ) : NetworkSearch
 
@@ -67,9 +69,11 @@ class RetrofitFsNetwork @Inject constructor() : FsNetworkDataSource {
         query: String,
         fields: String,
         categories: String,
+        minPrice: Int,
+        openNow: Boolean?,
         limit: Int,
     ): NetworkSearch =
-        networkApi.search(query, fields, categories, limit)
+        networkApi.search(query, fields, categories, minPrice, openNow, limit)
 
     override suspend fun getPlace(id: String, fields: String): NetworkResult =
         networkApi.getPlace(id, fields)

@@ -11,12 +11,14 @@ interface PlaceRepository {
         fields: String = "categories,distance,fsq_id,hours,location,name,photos,popularity,price,rating,tel,tips,verified,website",
     ): Flow<Venue>
 
-    fun getCoffeeBarsStream(
+    suspend fun getCoffeeBarsStream(
         query: String = "",
         fields: String = "distance,fsq_id,location,name,photos,price,rating",
         categories: String = "13032,13034,13034",
+        minPrice: Int = 1,
+        openNow: Boolean? = null,
         limit: Int = 50,
-    ): Flow<List<VenueItem>>
+    ): List<VenueItem>
 
     fun getPhotos(
         id: String,

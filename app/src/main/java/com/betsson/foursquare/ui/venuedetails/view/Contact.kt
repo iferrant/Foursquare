@@ -1,4 +1,4 @@
-package com.betsson.foursquare.ui.venuedetails
+package com.betsson.foursquare.ui.venuedetails.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

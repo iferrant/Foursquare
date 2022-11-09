@@ -9,6 +9,8 @@ interface FsNetworkDataSource {
         query: String,
         fields: String,
         categories: String,
+        minPrice: Int,
+        openNow: Boolean?,
         limit: Int,
     ): NetworkSearch
 

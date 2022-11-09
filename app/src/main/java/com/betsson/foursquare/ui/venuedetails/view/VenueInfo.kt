@@ -1,4 +1,4 @@
-package com.betsson.foursquare.ui.venuedetails
+package com.betsson.foursquare.ui.venuedetails.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -77,9 +77,4 @@ fun DetailsSection(
             content()
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewVenueInfo() {
 }
