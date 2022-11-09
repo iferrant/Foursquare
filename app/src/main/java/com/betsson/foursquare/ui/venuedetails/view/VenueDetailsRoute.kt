@@ -20,6 +20,7 @@ import com.betsson.foursquare.model.Regular
 import com.betsson.foursquare.model.Tip
 import com.betsson.foursquare.model.Venue
 import com.betsson.foursquare.ui.custom.PriceRange
+import com.betsson.foursquare.ui.venuedetails.VenueDetailsUiState
 import com.betsson.foursquare.ui.venuedetails.VenueDetailsViewModel
 import java.util.*
 
@@ -35,11 +36,11 @@ fun VenueDetailsRoute(
     viewModel: VenueDetailsViewModel = hiltViewModel(),
     onClick: (VenueDetailsClick) -> Unit,
 ) {
-    val state by viewModel.venueUiState.collectAsStateWithLifecycle()
+    val state by viewModel.venueDetailsUiStateFlow.collectAsStateWithLifecycle()
 
     VenueDetails(
         modifier = modifier,
-        venue = state,
+        state = state,
         onClick = onClick,
     )
 }
@@ -48,20 +49,20 @@ fun VenueDetailsRoute(
 @Composable
 fun VenueDetails(
     modifier: Modifier = Modifier,
-    venue: Venue,
+    state: VenueDetailsUiState,
     onClick: (VenueDetailsClick) -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             DetailsTopBar(
-                venue = venue,
+                venue = state.venue,
                 onClick = onClick,
             )
         },
     ) {
 
-        var state by remember { mutableStateOf(0) }
+        var tabsState by remember { mutableStateOf(0) }
         val titles = listOf(
             stringResource(id = R.string.tab_highlights),
             stringResource(id = R.string.tab_tips),
@@ -70,11 +71,11 @@ fun VenueDetails(
         Column(
             modifier = Modifier.padding(it)
         ) {
-            TabRow(selectedTabIndex = state) {
+            TabRow(selectedTabIndex = tabsState) {
                 titles.forEachIndexed { index, title ->
                     Tab(
-                        selected = state == index,
-                        onClick = { state = index },
+                        selected = tabsState == index,
+                        onClick = { tabsState = index },
                         text = {
                             Text(
                                 text = title,
@@ -88,11 +89,11 @@ fun VenueDetails(
 
             Spacer(modifier = Modifier.size(8.dp))
 
-            when (state) {
-                0 -> VenueInfo(venue = venue)
+            when (tabsState) {
+                0 -> VenueInfo(venue = state.venue)
                 1 -> {
-                    if (venue.tips != null) {
-                        VenueTips(tips = venue.tips.filterNotNull())
+                    if (state.venue.tips != null) {
+                        VenueTips(tips = state.venue.tips.filterNotNull())
                     } else {
                         //TODO: Empty state
                     }
@@ -146,10 +147,10 @@ fun DetailsTopBar(
 @Preview
 @Composable
 fun PreviewVenueDetails() {
-    VenueDetails(venue = venue) { }
+    VenueDetails(state = VenueDetailsUiState(venue = mockVenue)) { }
 }
 
-private val venue = Venue(
+private val mockVenue = Venue(
     categories = listOf("Coffee", "Restaurant"),
     distance = 1300,
     fsq_id = "id",

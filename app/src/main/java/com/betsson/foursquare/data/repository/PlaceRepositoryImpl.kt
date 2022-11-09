@@ -8,18 +8,16 @@ import com.betsson.foursquare.di.IoDispatcher
 import com.betsson.foursquare.model.Venue
 import com.betsson.foursquare.model.VenueItem
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PlaceRepositoryImpl @Inject constructor(
-    @IoDispatcher private val defaultDispatcher: CoroutineDispatcher,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val network: FsNetworkDataSource,
 ) : PlaceRepository {
 
-    override fun getPlace(id: String, fields: String): Flow<Venue> = flow {
-        emit(network.getPlace(id, fields).asModel())
+    override suspend fun getPlace(id: String, fields: String): Venue = withContext(ioDispatcher) {
+        network.getPlace(id, fields).asModel()
     }
 
     override suspend fun getCoffeeBarsStream(
@@ -30,18 +28,18 @@ class PlaceRepositoryImpl @Inject constructor(
         openNow: Boolean?,
         limit: Int,
     ): List<VenueItem> =
-        withContext(defaultDispatcher) {
+        withContext(ioDispatcher) {
             network
                 .search(query, fields, categories, minPrice, openNow, limit)
                 .results
                 .map(NetworkResult::asListModel)
         }
 
-    override fun getPhotos(
+    override suspend fun getPhotos(
         id: String,
         size: String,
-    ): Flow<List<String>> = flow{
-        emit(network.getPhotos(id).map { it.asModel(size) })
+    ): List<String> = withContext(ioDispatcher) {
+        network.getPhotos(id).map { it.asModel(size) }
     }
 
 }
