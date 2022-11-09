@@ -3,6 +3,7 @@
     <!-- Venues list -->
     <string name="coffee_title">Coffee &amp; tea</string>
     <string name="filter_open_now">Open now</string>
+    <string name="venue_details_empty_state">No matches</string>
     <!-- Venue details -->
     <string name="tab_highlights">Highlights</string>
     <string name="tab_tips">Tips</string>

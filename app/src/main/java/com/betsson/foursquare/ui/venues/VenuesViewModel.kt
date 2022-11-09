@@ -41,16 +41,23 @@ class VenuesViewModel @Inject constructor(
     private fun getVenuesList() {
         viewModelScope.launch {
             val response = repository.getCoffeeBarsStream()
-            _venueUiStateFlow.update { it.copy(venuesList = response) }
+            _venueUiStateFlow.update {
+                it.copy(
+                    venuesList = response,
+                    isLoading = false,
+                )
+            }
         }
     }
 
     fun applyPriceFilter(price: Int) {
+        _venueUiStateFlow.update { it.copy(isLoading = true) }
         currentSearch = currentSearch.copy(price = price)
         applyFilter(currentSearch)
     }
 
     fun applyOpenFilter(open: Boolean?) {
+        _venueUiStateFlow.update { it.copy(isLoading = true) }
         currentSearch = currentSearch.copy(open = open)
         applyFilter(currentSearch)
     }
@@ -59,7 +66,10 @@ class VenuesViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.getCoffeeBarsStream(minPrice = currentSearch.price, openNow = currentSearch.open)
             _venueUiStateFlow.update {
-                it.copy(venuesList = response)
+                it.copy(
+                    venuesList = response,
+                    isLoading = false,
+                )
             }
         }
     }

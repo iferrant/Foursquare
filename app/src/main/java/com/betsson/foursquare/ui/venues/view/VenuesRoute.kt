@@ -8,8 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
@@ -66,11 +68,19 @@ fun VenuesRoute(
                 onOpenClick = { isOpen -> viewModel.applyOpenFilter(if (isOpen) null else true) },
             )
 
-            Venues(
-                modifier = Modifier.padding(horizontal = 4.dp),
-                items = state.venuesList,
-                onClick = onClick,
-            )
+            if (state.isLoading) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+
+            if (state.venuesList.isEmpty() && state.isLoading.not()) {
+                EmptyState()
+            } else {
+                Venues(
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    items = state.venuesList,
+                    onClick = onClick,
+                )
+            }
         }
     }
 }
@@ -99,6 +109,24 @@ fun Filters(
 }
 
 @Composable
+private fun EmptyState(
+    modifier: Modifier = Modifier,
+    text: String = stringResource(id = R.string.venue_details_empty_state),
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.displayMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+        )
+    }
+}
+
+@Composable
 private fun Venues(
     modifier: Modifier = Modifier,
     items: List<VenueItem>,
@@ -111,4 +139,10 @@ private fun Venues(
         }
     }
 
+}
+
+@Preview
+@Composable
+private fun PreviewEmptyState() {
+    EmptyState()
 }
